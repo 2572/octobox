@@ -10,10 +10,6 @@ public class Start {
     public static void main(String args[]) throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
         Db db = (Db) context.getBean("db");
-        Transaction tx = db.start().beginTx();
-        Node node = db.node();
-        System.out.println(node);
-        tx.success();
-        db.erase();
+
     }
 }

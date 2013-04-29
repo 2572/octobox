@@ -33,13 +33,13 @@ public class Db {
         return databaseService.beginTx();
     }
 
-    public Db passTx(Transaction tx){
+    public Db pass(Transaction tx){
         tx.success();
         tx.finish();
         return this;
     }
 
-    public Db failTx(Transaction tx){
+    public Db fail(Transaction tx){
         tx.failure();
         tx.finish();
         return this;
