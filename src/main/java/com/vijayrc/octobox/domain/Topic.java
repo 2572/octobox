@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Topic {
+
     private String name;
+
     private List<Tag> tags = new ArrayList<Tag>();
 
     public Topic(String name) {
