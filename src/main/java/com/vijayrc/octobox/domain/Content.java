@@ -7,4 +7,8 @@ public class Content {
     public Content(String value) {
         this.value = value;
     }
+
+    public String value() {
+        return value;
+    }
 }

@@ -10,5 +10,27 @@ public class Mail {
     private Time time;
     private Content content;
 
+    public Subject subject() {
+        return subject;
+    }
 
+    public Person sender() {
+        return sender;
+    }
+
+    public List<Person> recipients() {
+        return recipients;
+    }
+
+    public List<Tag> tags() {
+        return tags;
+    }
+
+    public Time time() {
+        return time;
+    }
+
+    public Content content() {
+        return content;
+    }
 }
