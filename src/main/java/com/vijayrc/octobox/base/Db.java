@@ -7,6 +7,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.graphdb.index.Index;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,6 +50,10 @@ public class Db {
         return databaseService.createNode();
     }
 
+    public Index<Node> index(String name){
+        return databaseService.index().forNodes(name);
+    }
+
     public Db stop() {
         databaseService.shutdown();
         log.info("db stopped");
@@ -61,6 +66,5 @@ public class Db {
         log.info("db erased");
         return this;
     }
-
 
 }

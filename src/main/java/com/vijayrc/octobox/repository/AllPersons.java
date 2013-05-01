@@ -19,8 +19,9 @@ public class AllPersons {
         Transaction tx = db.beginTx();
         try {
             Node node = db.node();
+            node.setProperty("type", Person.class.getName());
             node.setProperty("name", person.name());
-            node.setProperty("name", person.email());
+            node.setProperty("email", person.email());
             person.node(node);
             db.pass(tx);
             log.info("added:" + person);
