@@ -28,7 +28,7 @@ public class AllTags {
         Transaction tx = db.beginTx();
         try {
             Tag tagDb = findBy(tag.name());
-            if (tagDb != null) {
+            if (tagDb.hasNode()) {
                 db.pass(tx);
                 log.info("exists:" + tag);
                 return tagDb;

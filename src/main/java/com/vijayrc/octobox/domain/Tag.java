@@ -6,10 +6,6 @@ public class Tag {
     private String name;
     private Node node;
 
-    public Tag() {
-        this.name = name;
-    }
-
     public String name() {
         return name;
     }
@@ -43,5 +39,9 @@ public class Tag {
         node.setProperty("type", Tag.class.getName());
         node.setProperty("name", tag.name());
         return node;
+    }
+
+    public boolean hasNode() {
+        return node != null;
     }
 }
