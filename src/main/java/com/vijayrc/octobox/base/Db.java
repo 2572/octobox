@@ -9,11 +9,13 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.Index;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 
 @Component
+@Scope("singleton")
 public class Db {
     private Logger log = Logger.getLogger(Db.class);
     private GraphDatabaseService databaseService;
@@ -22,25 +24,27 @@ public class Db {
     @Autowired
     public Db(Config config) {
         this.config = config;
+        start();
     }
 
     public Db start() {
+        if (databaseService != null) return this;
         databaseService = new GraphDatabaseFactory().newEmbeddedDatabase(config.dataDir());
         log.info("db started");
         return this;
     }
 
-    public Transaction beginTx(){
+    public Transaction beginTx() {
         return databaseService.beginTx();
     }
 
-    public Db pass(Transaction tx){
+    public Db pass(Transaction tx) {
         tx.success();
         tx.finish();
         return this;
     }
 
-    public Db fail(Transaction tx){
+    public Db fail(Transaction tx) {
         tx.failure();
         tx.finish();
         return this;
@@ -50,7 +54,7 @@ public class Db {
         return databaseService.createNode();
     }
 
-    public Index<Node> index(String name){
+    public Index<Node> index(String name) {
         return databaseService.index().forNodes(name);
     }
 

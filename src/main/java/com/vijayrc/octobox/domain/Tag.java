@@ -6,12 +6,17 @@ public class Tag {
     private String name;
     private Node node;
 
-    public Tag(String name) {
+    public Tag() {
         this.name = name;
     }
 
     public String name() {
         return name;
+    }
+
+    public Tag name(String name) {
+        this.name = name;
+        return this;
     }
 
     public Node node() {
@@ -26,5 +31,17 @@ public class Tag {
     @Override
     public String toString() {
         return "Tag[name=" + name + "|node=" + node + "]";
+    }
+
+    public static Tag copyNodeToTag(Tag tag, Node node) {
+        if (node == null || tag == null) return tag;
+        return tag.name((String) node.getProperty("name")).node(node);
+    }
+
+    public static Node copyTagToNode(Tag tag, Node node) {
+        if (node == null || tag == null) return node;
+        node.setProperty("type", Tag.class.getName());
+        node.setProperty("name", tag.name());
+        return node;
     }
 }

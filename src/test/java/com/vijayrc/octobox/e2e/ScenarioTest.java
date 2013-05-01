@@ -4,6 +4,7 @@ import com.vijayrc.octobox.base.Db;
 import com.vijayrc.octobox.domain.*;
 import com.vijayrc.octobox.repository.AllMails;
 import com.vijayrc.octobox.repository.AllPersons;
+import com.vijayrc.octobox.repository.AllTags;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +25,8 @@ public class ScenarioTest {
     private AllMails allMails;
     @Autowired
     private AllPersons allPersons;
+    @Autowired
+    private AllTags allTags;
 
     @Before
     public void setup() {
@@ -32,17 +35,15 @@ public class ScenarioTest {
 
     @Test
     public void shouldAddAMailWithPersonAndTag() {
-        Content content = new Content("content");
-        Subject subject = new Subject("subj");
-        Time time = new Time("2013-04-12 12:01:02");
-        Mail mail = new Mail()
-                .content(content)
-                .subject(subject)
-                .time(time)
-                .sender(new Person("shravan", "shravan@outlook.com"))
-                .tags(asList(new Tag("family")))
-                .recipients(asList(new Person("vijay", "vijayrc@outlook.com"), new Person("rekha", "rekha@outlook.com")));
+        allTags.add(new Tag().name("family"));
 
+        Mail mail = new Mail()
+                .content(new Content("content"))
+                .subject(new Subject("subj"))
+                .time(new Time("2013-04-12 12:01:02"))
+                .sender(new Person("shravan", "shravan@outlook.com"))
+                .tags(asList(new Tag().name("family")))
+                .recipients(asList(new Person("vijay", "vijayrc@outlook.com"), new Person("rekha", "rekha@outlook.com")));
         allMails.add(mail);
 
     }

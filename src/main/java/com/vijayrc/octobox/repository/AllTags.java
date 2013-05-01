@@ -15,29 +15,40 @@ import org.springframework.stereotype.Repository;
 public class AllTags {
 
     private Logger log = Logger.getLogger(AllTags.class);
-
     private Db db;
-    private Index nameIndex;
+    private Index<Node> index;
 
     @Autowired
     public AllTags(Db db) {
         this.db = db;
-        this.nameIndex = db.index("tag-name");
+        this.index = db.index("tag-name");
     }
 
-    public Tag add(Tag tag){
+    public Tag add(Tag tag) {
         Transaction tx = db.beginTx();
         try {
+            Tag tagDb = findBy(tag.name());
+            if (tagDb != null) {
+                db.pass(tx);
+                log.info("exists:" + tag);
+                return tagDb;
+            }
             Node node = db.node();
-            node.setProperty("type",Tag.class.getName());
-            node.setProperty("name",tag.name());
-            
-            tag.node(node);
+            Tag.copyTagToNode(tag, node);
+            index.add(node, "name", tag.name());
+
             db.pass(tx);
             log.info("added:" + tag);
         } catch (Exception e) {
             db.fail(tx);
+            log.error("error:" + tag + "|" + e);
         }
         return tag;
+    }
+
+    public Tag findBy(String name) {
+        Node node = index.get("name", name).getSingle();
+        log.info("found " + node + " for " + name);
+        return Tag.copyNodeToTag(new Tag(), node);
     }
 }
