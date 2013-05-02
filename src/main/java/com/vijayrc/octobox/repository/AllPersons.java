@@ -5,27 +5,45 @@ import com.vijayrc.octobox.domain.Person;
 import org.apache.log4j.Logger;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.index.Index;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Scope("singleton")
 public class AllPersons {
     private Logger log = Logger.getLogger(AllPersons.class);
 
-    @Autowired
     private Db db;
+    private Index<Node> nameIndex;
+    private Index<Node> emailIndex;
 
+    @Autowired
+    public AllPersons(Db db){
+        this.db = db;
+        this.nameIndex = db.index("person-name");
+        this.emailIndex = db.index("person-email");
+    }
+    
     public Person add(Person person) {
         Transaction tx = db.beginTx();
         try {
+            Person personDb = findByEmail(person.email());
+            if(personDb.hasNode()){
+                db.pass(tx);
+                return personDb;
+            }
             Node node = db.node();
-            node.setProperty("type", Person.class.getName());
-            node.setProperty("name", person.name());
-            node.setProperty("email", person.email());
-            person.node(node);
+            Person.copyFromPersonToNode(person, node);
+            
+            nameIndex.add(node,"name",person.name());
+            emailIndex.add(node,"email",person.email());
+            
             db.pass(tx);
             log.info("added:" + person);
         } catch (Exception e) {
+            log.error("error:" + person + "|" + e);
             db.fail(tx);
         }
         return person;
@@ -36,13 +54,18 @@ public class AllPersons {
         return person != null ? person : findByName(name);
     }
 
-    private Person findByName(String name) {
-        return null;
+    public Person findByName(String name) {
+        Node node = nameIndex.get("name", name).getSingle();
+        log.info("found person "+node+" for "+name);
+        return Person.copyFromNodeToPerson(new Person(),node);        
     }
 
-    private Person findByEmail(String email) {
-        return null;
+    public Person findByEmail(String email) {
+        Node node = emailIndex.get("email", email).getSingle();
+        log.info("found person "+node+" for "+email);
+        return Person.copyFromNodeToPerson(new Person(),node);
     }
+    
 
 
 }

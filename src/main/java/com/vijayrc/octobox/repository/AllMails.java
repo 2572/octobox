@@ -43,9 +43,10 @@ public class AllMails {
                 mailNode.createRelationshipTo(tagNode,byTag);
             }
             mail.node(mailNode);
-            db.pass(tx);
             log.info("added:" + mail);
+            db.pass(tx);
         } catch (Exception e) {
+            log.error("error:" + mail + "|" + e);
             db.fail(tx);
         }
         return mail;

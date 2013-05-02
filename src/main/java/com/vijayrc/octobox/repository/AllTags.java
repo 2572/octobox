@@ -48,7 +48,7 @@ public class AllTags {
 
     public Tag findBy(String name) {
         Node node = index.get("name", name).getSingle();
-        log.info("found " + node + " for " + name);
+        log.info("found tag: " + node + " for " + name);
         return Tag.copyNodeToTag(new Tag(), node);
     }
 }

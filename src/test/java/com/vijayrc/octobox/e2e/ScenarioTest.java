@@ -36,6 +36,7 @@ public class ScenarioTest {
     @Test
     public void shouldAddAMailWithPersonAndTag() {
         allTags.add(new Tag().name("family"));
+        allPersons.add(new Person("shravan","shravan@outlook.com"));
 
         Mail mail = new Mail()
                 .content(new Content("content"))
