@@ -20,30 +20,30 @@ public class AllPersons {
     private Index<Node> emailIndex;
 
     @Autowired
-    public AllPersons(Db db){
+    public AllPersons(Db db) {
         this.db = db;
         this.nameIndex = db.index("person-name");
         this.emailIndex = db.index("person-email");
     }
-    
+
     public Person add(Person person) {
         Transaction tx = db.beginTx();
         try {
             Person personDb = findByEmail(person.email());
-            if(personDb.hasNode()){
+            if (personDb.hasNode()) {
                 db.pass(tx);
                 return personDb;
             }
             Node node = db.node();
             Person.copyFromPersonToNode(person, node);
-            
-            nameIndex.add(node,"name",person.name());
-            emailIndex.add(node,"email",person.email());
-            
+
+            nameIndex.add(node, "name", person.name());
+            emailIndex.add(node, "email", person.email());
+
             db.pass(tx);
             log.info("added:" + person);
         } catch (Exception e) {
-            log.error("error:" + person + "|" + e);
+            log.error("error:" + person, e);
             db.fail(tx);
         }
         return person;
@@ -56,16 +56,19 @@ public class AllPersons {
 
     public Person findByName(String name) {
         Node node = nameIndex.get("name", name).getSingle();
-        log.info("found person "+node+" for "+name);
-        return Person.copyFromNodeToPerson(new Person(),node);        
+        log.info(message(node) + "|" + name);
+        return Person.copyFromNodeToPerson(new Person(), node);
     }
 
     public Person findByEmail(String email) {
         Node node = emailIndex.get("email", email).getSingle();
-        log.info("found person "+node+" for "+email);
-        return Person.copyFromNodeToPerson(new Person(),node);
+        log.info(message(node) + "|" + email);
+        return Person.copyFromNodeToPerson(new Person(), node);
     }
-    
+
+    private String message(Node node) {
+        return (node == null) ? "not found" : "found";
+    }
 
 
 }

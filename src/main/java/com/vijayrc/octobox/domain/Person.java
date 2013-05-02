@@ -37,6 +37,7 @@ public class Person {
         node.setProperty("type", Person.class.getName());
         node.setProperty("name", person.name());
         node.setProperty("email", person.email());
+        person.node(node);
         return node;
     }
 
@@ -54,6 +55,7 @@ public class Person {
         this.name = name;
         return this;
     }
+
 
     @Override
     public String toString() {

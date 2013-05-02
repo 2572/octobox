@@ -38,6 +38,7 @@ public class Tag {
         if (node == null || tag == null) return node;
         node.setProperty("type", Tag.class.getName());
         node.setProperty("name", tag.name());
+        tag.node(node);
         return node;
     }
 

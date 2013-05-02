@@ -30,7 +30,6 @@ public class AllTags {
             Tag tagDb = findBy(tag.name());
             if (tagDb.hasNode()) {
                 db.pass(tx);
-                log.info("exists:" + tag);
                 return tagDb;
             }
             Node node = db.node();
@@ -48,7 +47,8 @@ public class AllTags {
 
     public Tag findBy(String name) {
         Node node = index.get("name", name).getSingle();
-        log.info("found tag: " + node + " for " + name);
+        String message = (node == null) ? "not found" : "found";
+        log.info(message + "|" + name);
         return Tag.copyNodeToTag(new Tag(), node);
     }
 }
